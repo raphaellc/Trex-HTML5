@@ -1,0 +1,15 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+.game-container {
+    position: relative;
+    width: 800px;
+    height: 400px;
+    margin: 0 auto;
+    background-color: #f7f7f7;
+    border: 1px solid #ccc;
+}
+
+/* You can add styling for the T-Rex and obstacles here */
