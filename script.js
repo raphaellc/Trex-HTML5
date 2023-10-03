@@ -7,7 +7,7 @@ const tRex = {
     width: 40,
     height: 40,
     jumping: false,
-    jumpHeight: 100,
+    jumpHeight: 150,
     jumpSpeed: 5
 	
 };
@@ -142,4 +142,3 @@ document.addEventListener("keydown", function (event) {
 
 // Start the game loop
 update();
-*/
