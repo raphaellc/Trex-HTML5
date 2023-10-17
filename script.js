@@ -1,73 +1,38 @@
-function configuracao(){
-	var inicia_jogo = document.getElementById("inicia_jogo");
-	var novo_usuario = document.getElementById("novo_usuario");
-	console.log("teste");	
-	console.log(localStorage.getItem("maiorScore"));
-	if(localStorage.getItem("maiorScore") !== null){
-	console.log("é nulo");
-	console.log(localStorage.getItem("maiorScore"));
-	//Esconde o Elemento do Canvas
-		inicia_jogo.style.display = "none";
-	//Mostra o Form para registrar o usuário;
-		novo_usuario.style.display = "block";
-	}else{
-			console.log("não é nulo");
-			console.log(localStorage.getItem("maiorScore"));
-		//Esconde o Form para registrar o usuário;
-		novo_usuario.style.display = "none";
-		//Mostra o Elemento do Canvas
-		inicia_jogo.style.display = "block";
-	}
-}
-function novoUsuario(){
-	var inicia_jogo = document.getElementById("inicia_jogo");
-	var novo_usuario = document.getElementById("novo_usuario");
-	// Obtém o valor do campo de entrada
-	var nomeUsuario = document.getElementById("nome").value;
-	// Armazena o nome do usuário na variável de sessão (localStorage)
-	localStorage.setItem("nomeUsuario", nomeUsuario);
-	//alert(localStorage.getItem("maiorScore"));
-	if(localStorage.getItem("maiorScore") !== null || localStorage.getItem("maiorScore") != 0 )
-		localStorage.setItem("maiorScore",localStorage.getItem("maiorScore"));
-	else{
-		localStorage.setItem("maiorScore",0);
-		alert(localStorage.getItem("maiorScore"));
-	}
-	const canvas = document.getElementById("game-canvas");
-	const ctx = canvas.getContext("2d");
+const canvas = document.getElementById("game-canvas");
+const ctx = canvas.getContext("2d");
 
-	const tRex = {
-		x: 50,
-		y: canvas.height - 40,
-		width: 40,
-		height: 40,
-		jumping: false,
-		jumpHeight: 150,
-		jumpSpeed: 5
-		
-	};
+const tRex = {
+    x: 50,
+    y: canvas.height - 40,
+    width: 40,
+    height: 40,
+    jumping: false,
+    jumpHeight: 150,
+    jumpSpeed: 5,
+    isRunning: true, // Adicione uma propriedade para rastrear o estado do T-Rex
+    runningSprite: new Image(),
+    jumpingSprite: new Image(),
+    
+};
 
-	const obstacles = [];
+tRex.runningSprite.src = "Dino1.png"; // Carregue a imagem de corrida
+tRex.jumpingSprite.src = "DinoPulando.png"; // Carregue a imagem de pulo
 
-	let score = 0;
-	let isGameOver = false;
-	// Start the game loop
-	update();
-	// Redireciona para outra página ou realiza qualquer outra ação necessária
-	//alert("Nome do usuário salvo com sucesso!");
+const obstacles = [];
 
-	// Você pode redirecionar para outra página usando 
-	//window.location.href, por exemplo:
-	 //window.location.href = "index.html";
-	/* novo_usuario.style.display = "none";
-	inicia_jogo.style.display = "block"; */
-			
-}
+let score = 0;
+let isGameOver = false;
+	
 
 // Function to draw the T-Rex
 function drawTrex() {
-    ctx.fillStyle = "green";
-    ctx.fillRect(tRex.x, tRex.y, tRex.width, tRex.height);
+    if (tRex.isRunning) {
+        ctx.drawImage(tRex.runningSprite, tRex.x, tRex.y, tRex.width, tRex.height);
+    } else {
+        ctx.drawImage(tRex.jumpingSprite, tRex.x, tRex.y, tRex.width, tRex.height);
+    }
+    //ctx.fillStyle = "green";
+    //ctx.fillRect(tRex.x, tRex.y, tRex.width, tRex.height);
 }
 
 
@@ -89,7 +54,7 @@ function update() {
 
         // Draw the T-Rex
         drawTrex();
-
+        
         // Draw and update obstacles
         drawObstacles();
 		updateObstacles();
@@ -116,6 +81,7 @@ function update() {
 function jump() {
       if (!tRex.jumping) {
         tRex.jumping = true;
+        tRex.isRunning = false; 
         let jumpHeight = 0;
         let jumpInterval = setInterval(() => {
             if (jumpHeight < tRex.jumpHeight) {
@@ -138,6 +104,7 @@ function fall() {
             clearInterval(fallInterval);
             tRex.y = canvas.height - tRex.height; // Defina a posição final do T-Rex no chão
             tRex.jumping = false; // O T-Rex não está mais pulando
+            tRex.isRunning = true;
         }
     }, 10);
 }
@@ -182,9 +149,11 @@ function checkCollision() {
 
 // Event listener for jumping
 document.addEventListener("keydown", function (event) {
-    if (event.keyCode === 32) {
+    if (event.key === "32") {
         jump();
     }
 });
 
 
+// Start the game loop
+update();
